@@ -1,0 +1,22 @@
+body {
+  background-color: #F7F7F7;
+}
+
+.container{
+  max-width: 1010px;
+  margin: 0 auto;
+}
+
+.ant-tabs{
+	min-height: 100vh;
+	background: #FFFFFF;
+}
+
+.ant-tabs-nav-wrap{
+  justify-content: center;
+}
+
+.ant-tabs-tab{
+  padding-top: 19px;
+  padding-bottom: 10px;
+}
