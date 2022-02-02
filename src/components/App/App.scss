@@ -1,5 +1,5 @@
-body {
-  background-color: #F7F7F7;
+body{
+  background-color: #E5E5E5 !important;
 }
 
 .container{
@@ -20,3 +20,16 @@ body {
   padding-top: 19px;
   padding-bottom: 10px;
 }
+
+.ant-tabs-nav{
+  margin-bottom: 0 !important;
+
+  &::before{
+    display: none;
+  }
+}
+
+.ant-layout{
+  position: relative;
+}
+

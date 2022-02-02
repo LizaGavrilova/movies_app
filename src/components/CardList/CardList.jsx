@@ -3,23 +3,26 @@ import React, { Component } from "react";
 import './CardList.scss';
 
 import Item from '../Item';
+import { Content } from "antd/lib/layout/layout";
 
 export default class CardList extends Component {
+  const 
+
   render() {
-    const {moviesList} = this.props;
+    const {moviesList, shortText} = this.props;
     const elements = moviesList.map((item) => {
       return (
         <Item
           key={item.id}
-          id={item.id}
-          title={item.title} />
+          item={item}
+          shortText={shortText} />
       );
     });
 
     return (
-      <div className="cardList">
+      <Content>
         {elements}
-      </div>
+      </Content>
     );
   };
 };

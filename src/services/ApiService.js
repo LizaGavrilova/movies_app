@@ -10,7 +10,7 @@ export default class ApiService {
     return await res.json();
   };
 
-  async getAllMovies(searchQuery = 'return', pageNumber = 1) {
+  async getAllMovies(searchQuery = 'Harry Potter and', pageNumber = 1) {
     return await this.getResource(`search/movie?api_key=${this.apiKey}&include_adult=false&query=${searchQuery}&page=${pageNumber}`);
   };
 }

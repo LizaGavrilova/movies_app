@@ -13,10 +13,15 @@ const { TabPane } = Tabs;
 
 export default class App extends Component {
 
+  constructor() {
+    super();
+    this.searchMovies();
+  }
+
   state = {
     moviesList: [],
-    searchQuery: 'return',
-    pageNumber: 1
+    searchQuery: 'Harry Potter and',
+    pageNumber: 1,
   };
 
   createItem = (item) => {
@@ -24,7 +29,9 @@ export default class App extends Component {
       id: item.id,
       title: item.title,
       overview: item.overview,
-      popularity: item.popularity      
+      popularity: item.popularity,
+      poster_path: item.poster_path,
+      release_date: item.release_date   
     };
   };
 
@@ -50,9 +57,18 @@ export default class App extends Component {
       });
   };
 
+  shortText = (text, length) => {
+    if (text.length > length) {
+      let lastIndex = text.slice(0, length).lastIndexOf(' ');
+      let newText = text.slice(0, lastIndex) + "...";
+      return newText;
+    } else {
+      return text;
+    }
+  };
+
   render() {
     const {moviesList} = this.state;
-    this.searchMovies();
 
     return (
       <div className="container">
@@ -61,7 +77,8 @@ export default class App extends Component {
               <TabPane tab="Search" key="1">
                 <Search />
                 <CardList
-                  moviesList={moviesList} />
+                  moviesList={moviesList}
+                  shortText={this.shortText} />
               </TabPane>
               <TabPane tab="Rated" key="2">
                 <RatedList />
