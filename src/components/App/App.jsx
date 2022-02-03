@@ -8,41 +8,19 @@ import CardList from '../CardList';
 import RatedList from '../RatedList';
 import ApiService from "../../services/ApiService";
 
-import { Layout, Tabs } from 'antd';
+import { Alert, Spin, Layout, Tabs } from 'antd';
+import { debounce } from "lodash";
 const { TabPane } = Tabs;
 
 export default class App extends Component {
 
-  constructor() {
-    super();
-    this.searchMovies();
-  }
-
   state = {
     moviesList: [],
-    searchQuery: 'Harry Potter and',
+    searchQuery: '',
     pageNumber: 1,
-  };
-
-  createItem = (item) => {
-    return {
-      id: item.id,
-      title: item.title,
-      overview: item.overview,
-      popularity: item.popularity,
-      poster_path: item.poster_path,
-      release_date: item.release_date   
-    };
-  };
-
-  addItem = (item) => {
-    const newItem = this.createItem(item);
-    this.setState(({ moviesList }) => {
-      const newArr = [...moviesList, newItem];
-      return {
-        moviesList: newArr
-      };
-    });
+    loading: false,
+    error: false,
+    notFound: false
   };
 
   searchMovies = () => {
@@ -50,11 +28,30 @@ export default class App extends Component {
     const apiService = new ApiService();
     apiService
       .getAllMovies(searchQuery, pageNumber)
-      .then((body) => {
-        body.results.forEach((el) => {
-          this.addItem(el);
-        }) ;       
-      });
+      .then((res) => {
+        this.setState({
+          moviesList: [...res],
+          loading: false,
+          error: false,
+          notFound: false
+        });
+      })
+      .then(() => {
+        if (this.state.moviesList.length === 0) {
+          this.setState({
+            notFound: true
+          });
+        }
+      })
+      .catch(this.onError);      
+  };
+
+  onError = () => {
+    this.setState({
+      loading: false,
+      notFound: false,
+      error: true
+    });
   };
 
   shortText = (text, length) => {
@@ -67,18 +64,50 @@ export default class App extends Component {
     }
   };
 
+  debounceSearchMovies = debounce(this.searchMovies, 300);
+
+  onInputChange = (evt) => {
+    this.setState({
+      searchQuery: evt.target.value,
+      loading: true
+    },
+    () => {
+      this.debounceSearchMovies();
+    }
+    );
+  };
+
   render() {
-    const {moviesList} = this.state;
+    const {moviesList, searchQuery, error, loading, notFound} = this.state;
+
+    const errorMessage = (error && searchQuery !== '') ? (
+      <Alert message='Error' description='Something went wrong!' type="error" showIcon />
+    ) : null;
+
+    const onNotFound = (!loading && !error && notFound) ? (
+      <Alert message='Nothing found for your request' type="info" showIcon />
+    ) : null;
+
+    const spin = (loading && !error) ? <Spin size="large" /> : null;
+
+    const cardList = (!loading && !error) ? (
+      <CardList
+        moviesList={moviesList}
+        shortText={this.shortText} />
+    ) : null;
 
     return (
       <div className="container">
         <Layout>
             <Tabs defaultActiveKey="1">
               <TabPane tab="Search" key="1">
-                <Search />
-                <CardList
-                  moviesList={moviesList}
-                  shortText={this.shortText} />
+                <Search onInputChange={this.onInputChange} />
+                <React.Fragment>
+                  {errorMessage}
+                  {onNotFound}
+                  {spin}
+                  {cardList}                  
+                </React.Fragment>                
               </TabPane>
               <TabPane tab="Rated" key="2">
                 <RatedList />
