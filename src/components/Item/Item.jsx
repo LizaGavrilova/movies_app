@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import './Item.scss';
 import 'antd/dist/antd.min.css';
@@ -8,24 +9,35 @@ import { format } from 'date-fns';
 import noPoster from '../../img/no_poster.png';
 
 export default class Item extends Component {
+  static defaultProps = {
+    shortText: () => {},
+    item: {}
+  };
+
+  static propTypes = {
+    shortText: PropTypes.func,
+    item: PropTypes.instanceOf(Object)
+  };
+
   showPoster = (path) => {
     if (path) {
       return `https://image.tmdb.org/t/p/w500/${path}`;
     } 
-    return noPoster;
-    
+    return noPoster;    
   };
 
   render() {
-    const { shortText } = this.props;
-    const { title, release_date, poster_path, overview } = this.props.item;
+    const { shortText, item } = this.props;
+    const { title, release_date: releaseDate, poster_path: posterPath, overview } = item;
 
-    const poster = this.showPoster(poster_path);
+    const poster = this.showPoster(posterPath);
     const name = shortText(title, 35);
+
     let date;
-    try {
-      date = format(new Date(release_date), "MMM d',' yyyy");
-    } catch (e) {}
+    if (releaseDate) {
+      date = format(new Date(releaseDate), "MMM d',' yyyy");
+    };
+
     const text = shortText(overview, 170);
 
     return (

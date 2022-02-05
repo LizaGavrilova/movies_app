@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import './CardList.scss';
 
@@ -7,6 +8,16 @@ import Item from '../Item';
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class CardList extends Component {
+  static defaultProps = {
+    moviesList: [],
+    shortText: () => {}
+  };
+
+  static propTypes = {
+    moviesList: PropTypes.instanceOf(Array),
+    shortText: PropTypes.func
+  };
+
   render() {
     const { moviesList, shortText } = this.props;
     const elements = moviesList.map((item) => <Item key={item.id} item={item} shortText={shortText} />);
