@@ -1,9 +1,15 @@
 .ant-layout-content {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 36px;
+  grid-column-gap: 36px;
 
   padding: 0 36px;
+  margin-top: 32px;
+
+  @media screen and (max-width: 980px){
+    grid-template-columns: 1fr
+  }
 }
 
 .ant-spin {

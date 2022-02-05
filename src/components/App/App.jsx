@@ -8,7 +8,7 @@ import CardList from '../CardList';
 import RatedList from '../RatedList';
 import ApiService from "../../services/ApiService";
 
-import { Alert, Spin, Layout, Tabs } from 'antd';
+import { Alert, Spin, Layout, Tabs, Pagination } from 'antd';
 import { debounce } from "lodash";
 const { TabPane } = Tabs;
 
@@ -18,19 +18,22 @@ export default class App extends Component {
     moviesList: [],
     searchQuery: '',
     pageNumber: 1,
+    totalPages: 0,
     loading: false,
     error: false,
     notFound: false
   };
 
+  //Получить список фильмов с API
   searchMovies = () => {
     const {searchQuery, pageNumber} = this.state;
     const apiService = new ApiService();
     apiService
       .getAllMovies(searchQuery, pageNumber)
-      .then((res) => {
+      .then((body) => {
         this.setState({
-          moviesList: [...res],
+          moviesList: [...body.results],
+          totalPages: body.total_pages,
           loading: false,
           error: false,
           notFound: false
@@ -64,21 +67,40 @@ export default class App extends Component {
     }
   };
 
+  //Задержка получения списка фильмов
   debounceSearchMovies = debounce(this.searchMovies, 300);
 
   onInputChange = (evt) => {
     this.setState({
       searchQuery: evt.target.value,
-      loading: true
-    },
-    () => {
-      this.debounceSearchMovies();
-    }
-    );
+      loading: true,
+      pageNumber: 1
+    });
+  };
+
+  //Обновление
+  componentDidUpdate(prevProps, prevState) {
+    const {searchQuery, pageNumber} = this.state;
+
+    if (searchQuery !== prevState.searchQuery || pageNumber !== prevState.pageNumber) {
+      this.setState({
+        loading: true,
+        error: false,
+        notFound: false
+      });
+      this.debounceSearchMovies(searchQuery, pageNumber);
+    };
+  } ;
+
+  //Пагинация
+  onPageChange = (page) => {
+    this.setState({
+      pageNumber: page
+    });
   };
 
   render() {
-    const {moviesList, searchQuery, error, loading, notFound} = this.state;
+    const {moviesList, searchQuery, pageNumber, totalPages, error, loading, notFound} = this.state;
 
     const errorMessage = (error && searchQuery !== '') ? (
       <Alert message='Error' description='Something went wrong!' type="error" showIcon />
@@ -96,6 +118,15 @@ export default class App extends Component {
         shortText={this.shortText} />
     ) : null;
 
+    const onPagination = (moviesList.length !== 0 && searchQuery !== '' && !loading && !error) ? (
+      <Pagination
+        current={pageNumber}
+        total={totalPages * 10}
+        onChange={this.onPageChange}
+        size="small">
+      </Pagination>
+    ) : null;
+
     return (
       <div className="container">
         <Layout>
@@ -106,7 +137,8 @@ export default class App extends Component {
                   {errorMessage}
                   {onNotFound}
                   {spin}
-                  {cardList}                  
+                  {cardList}
+                  {onPagination}               
                 </React.Fragment>                
               </TabPane>
               <TabPane tab="Rated" key="2">

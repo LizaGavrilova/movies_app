@@ -2,17 +2,28 @@ import React, { Component } from "react";
 
 import './Item.scss';
 import 'antd/dist/antd.min.css';
+import noPoster from '../../img/no_poster.png';
 
 import { Card } from "antd";
 import { Rate } from "antd";
 import { format } from 'date-fns';
 
 export default class Item extends Component {
+
+  showPoster = (path) => {
+    if (path) {
+      return `https://image.tmdb.org/t/p/w500/${path}`
+    } else {
+      return noPoster;
+    }
+
+  };
+
   render() {
     const {shortText} = this.props;
     const {title, release_date, poster_path, overview} = this.props.item;
     
-    const poster = `https://image.tmdb.org/t/p/w500/${poster_path}`;
+    const poster = this.showPoster(poster_path);
     const name = shortText(title, 35);
     let date;
     try {
@@ -32,7 +43,7 @@ export default class Item extends Component {
         <div className="ant-card-body_text">{text}</div>
 
         <div className="ant-card-body_stars">
-          <Rate />
+          <Rate count={10} />
         </div>
       </Card>
     );

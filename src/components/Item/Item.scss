@@ -2,12 +2,19 @@
   display: flex;
   width: 454px;
   height: 300px;
+  margin: 0 auto;
 
-  margin-top: 32px;
+  @media (max-width: 550px) {
+    width: 387px;    
+  }
 }
 
 .ant-card-cover{
-  max-width: 200px;
+  width: 200px;
+
+  @media (max-width: 550px) {
+    width: 91px;    
+  }
 }
 
 .ant-card-body {
@@ -55,5 +62,27 @@
   max-height: 129px;
 
   margin-top: 7px;
+
+  @media (max-width: 550px) {
+    position: absolute;
+    bottom:60px;
+    left: 10px;
+    right:  10px;    
+  }
+}
+
+.ant-card-body_stars {
+  position: absolute;
+  bottom: 10px;
+
+  @media (max-width: 550px) {
+    position: absolute;
+    bottom: 12px;
+    right: 10px;   
+  }
+}
+
+.anticon-star svg{
+  width:15px
 }
 

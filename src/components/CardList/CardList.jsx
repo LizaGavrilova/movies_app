@@ -6,7 +6,6 @@ import Item from '../Item';
 import { Content } from "antd/lib/layout/layout";
 
 export default class CardList extends Component {
-  const 
 
   render() {
     const {moviesList, shortText} = this.props;

@@ -10,8 +10,8 @@ export default class ApiService {
     return await res.json();
   };
 
-  async getAllMovies(searchQuery, pageNumber = 1) {
-    const res = await this.getResource(`search/movie?api_key=${this.apiKey}&include_adult=false&query=${searchQuery}&page=${pageNumber}`);
-    return res.results;
+  async getAllMovies(searchQuery, pageNumber) {
+    return await this.getResource(`search/movie?api_key=${this.apiKey}&include_adult=false&query=${searchQuery}&page=${pageNumber}`);
+  
   };
 }

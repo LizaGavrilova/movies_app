@@ -4,6 +4,7 @@ body{
 
 .container{
   max-width: 1010px;
+  min-width: 460px;
   margin: 0 auto;
 }
 
@@ -33,3 +34,7 @@ body{
   position: relative;
 }
 
+.ant-pagination {
+  text-align: center;
+  padding: 20px 0 !important;
+}
