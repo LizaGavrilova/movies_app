@@ -5,6 +5,10 @@ import 'antd/dist/antd.min.css';
 
 import { Alert, Spin, Layout, Tabs, Pagination } from 'antd';
 import { debounce } from 'lodash';
+import { Offline, Online } from "react-detect-offline";
+
+import noConnection from '../../img/no_connection.png';
+
 import Search from '../Search';
 import CardList from '../CardList';
 import RatedList from '../RatedList';
@@ -122,23 +126,32 @@ export default class App extends Component {
 
     return (
       <div className="container">
-        <Layout>
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Search" key="1">
-              <Search onInputChange={this.onInputChange} />
-              <>
-                {errorMessage}
-                {onNotFound}
-                {spin}
-                {cardList}
-                {onPagination}
-              </>
-            </TabPane>
-            <TabPane tab="Rated" key="2">
-              <RatedList />
-            </TabPane>
-          </Tabs>
-        </Layout>
+        <Online>
+          <Layout>
+            <Tabs defaultActiveKey="1">
+              <TabPane tab="Search" key="1">
+                <Search onInputChange={this.onInputChange} />
+                <>
+                  {errorMessage}
+                  {onNotFound}
+                  {spin}
+                  {cardList}
+                  {onPagination}
+                </>
+              </TabPane>
+              <TabPane tab="Rated" key="2">
+                <RatedList />
+              </TabPane>
+            </Tabs>
+          </Layout> 
+          <img className='hidden connection_img' src={noConnection} alt='No connection' />         
+        </Online>        
+
+        <Offline>
+          <img className='connection_img' src={noConnection} alt='No connection' style={{margin: '50px'}} />
+          <h1 className='connection_text' style={{textAlign: 'center'}}>No internet connection</h1>
+        </Offline>
+        
       </div>
     );
   }
