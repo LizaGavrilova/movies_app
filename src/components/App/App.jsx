@@ -9,6 +9,7 @@ import { Offline, Online } from "react-detect-offline";
 
 import noConnection from '../../img/no_connection.png';
 
+import { GenresProvider } from '../GenresContext.js/GenresContext'; 
 import Search from '../Search';
 import CardList from '../CardList';
 import RatedList from '../RatedList';
@@ -25,6 +26,18 @@ export default class App extends Component {
     loading: false,
     error: false,
     notFound: false,
+    ratedList: [],
+    genresList: []
+  };
+
+  componentDidMount() {
+    this.getGenresList();
+
+    if (!JSON.parse(localStorage.getItem('guestToken'))) {
+      this.createGuestSession();
+    } else {
+      this.changeRatedMovies();
+    };
   };
 
   // Получить список фильмов с API
@@ -72,6 +85,7 @@ export default class App extends Component {
   };
 
   // Задержка получения списка фильмов
+  // eslint-disable-next-line react/sort-comp
   debounceSearchMovies = debounce(this.searchMovies, 300);
 
   onInputChange = (evt) => {
@@ -104,8 +118,42 @@ export default class App extends Component {
     });
   };
 
+  createGuestSession = () => {
+    const apiService = new ApiService();
+    apiService
+      .createGuestSession()
+      .then((res) => {
+        localStorage.setItem('guestToken', JSON.stringify(res));
+      })
+      .catch(this.onError);
+  };
+
+  getGenresList = () => {
+    const apiService = new ApiService();
+    apiService
+      .getGenres()
+      .then((res) => {
+        this.setState({
+          genresList: [...res]          
+        })
+      })
+      .catch(this.onError);
+  };
+
+  changeRatedMovies = () => {
+    const apiService = new ApiService();
+    apiService
+      .getRatedMovies()
+      .then((body) => {
+        this.setState({
+          ratedList: [...body.results]
+        });
+      });
+  };
+
+
   render() {
-    const { moviesList, searchQuery, pageNumber, totalPages, error, loading, notFound } = this.state;
+    const { moviesList, searchQuery, pageNumber, totalPages, error, loading, notFound, ratedList, genresList } = this.state;
 
     const errorMessage =
       error && searchQuery !== '' ? (
@@ -117,7 +165,13 @@ export default class App extends Component {
 
     const spin = loading && !error ? <Spin size="large" /> : null;
 
-    const cardList = !loading && !error ? <CardList moviesList={moviesList} shortText={this.shortText} /> : null;
+    const cardList = !loading && !error ? <CardList
+                                            moviesList={moviesList}
+                                            shortText={this.shortText}
+                                            ratedList={ratedList}
+                                            genresList={genresList}
+                                            changeRatedMovies={this.changeRatedMovies}
+                                          /> : null;
 
     const onPagination =
       moviesList.length !== 0 && searchQuery !== '' && !loading && !error ? (
@@ -125,34 +179,36 @@ export default class App extends Component {
       ) : null;
 
     return (
-      <div className="container">
-        <Online>
-          <Layout>
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="Search" key="1">
-                <Search onInputChange={this.onInputChange} />
-                <>
-                  {errorMessage}
-                  {onNotFound}
-                  {spin}
-                  {cardList}
-                  {onPagination}
-                </>
-              </TabPane>
-              <TabPane tab="Rated" key="2">
-                <RatedList />
-              </TabPane>
-            </Tabs>
-          </Layout> 
-          <img className='hidden connection_img' src={noConnection} alt='No connection' />         
-        </Online>        
+      <GenresProvider value={genresList}>
+        <div className="container">
+          <Online>
+            <Layout>
+              <Tabs defaultActiveKey="1">
+                <TabPane tab="Search" key="1">
+                  <Search onInputChange={this.onInputChange} />
+                  <>
+                    {errorMessage}
+                    {onNotFound}
+                    {spin}
+                    {cardList}
+                    {onPagination}
+                  </>
+                </TabPane>
+                <TabPane tab="Rated" key="2">
+                  <RatedList ratedList={ratedList} changeRatedMovies={this.changeRatedMovies} />
+                </TabPane>
+              </Tabs>
+            </Layout> 
+            <img className='hidden connection_img' src={noConnection} alt='No connection' />         
+          </Online>        
 
-        <Offline>
-          <img className='connection_img' src={noConnection} alt='No connection' style={{margin: '50px'}} />
-          <h1 className='connection_text' style={{textAlign: 'center'}}>No internet connection</h1>
-        </Offline>
-        
-      </div>
+          <Offline>
+            <img className='connection_img' src={noConnection} alt='No connection' style={{margin: '50px'}} />
+            <h1 className='connection_text' style={{textAlign: 'center'}}>No internet connection</h1>
+          </Offline>
+          
+        </div>
+      </GenresProvider>
     );
   }
 }
