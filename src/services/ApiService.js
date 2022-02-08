@@ -4,7 +4,6 @@ export default class ApiService {
   apiKey = '951df45a72c2a2a67182d7d2628cf7d4';
 
   token = JSON.parse(localStorage.getItem('guestToken'));
-  
 
   async getResource(url) {
     const res = await fetch(`${this.apiBase}${url}`);
@@ -38,12 +37,12 @@ export default class ApiService {
   async setRating(id, rating) {
     const url = `${this.apiBase}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${this.token}`;
     const body = {
-      value: rating
+      value: rating,
     };
 
     await fetch(url, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json;charset=utf-8'},
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify(body),
     }).catch();
   }
@@ -54,7 +53,7 @@ export default class ApiService {
 
     await fetch(url, {
       method: 'DELETE',
-      headers: {'Content-Type': 'application/json;charset=utf-8'}
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
     });
   }
 
