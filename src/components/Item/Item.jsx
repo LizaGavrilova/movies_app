@@ -11,10 +11,9 @@ import noPoster from '../../img/no_poster.png';
 export default class Item extends Component {
   static defaultProps = {
     id: 0,
-    shortText: () => {},
     item: {},
-    ratedList: [],
     genresList: [],
+    shortText: () => {}, 
     changeRatedMovies: () => {},
     setRating: () => {},
     deleteRating: () => {},
@@ -23,10 +22,9 @@ export default class Item extends Component {
 
   static propTypes = {
     id: PropTypes.number,
-    shortText: PropTypes.func,
     item: PropTypes.instanceOf(Object),
-    ratedList: PropTypes.instanceOf(Array),
     genresList: PropTypes.instanceOf(Array),
+    shortText: PropTypes.func,
     changeRatedMovies: PropTypes.func,
     setRating: PropTypes.func,
     deleteRating: PropTypes.func,
@@ -78,41 +76,10 @@ export default class Item extends Component {
       borderColor: color
     }
   };
-  
-  // eslint-disable-next-line react/no-unused-class-component-methods
-  checkMovieInRated = (id, arr, isRating) => {   
-    let rating = 0;
-
-    if (isRating) {
-      rating = isRating; 
-    } else {
-      arr.forEach((el) => {
-        if (el.id === id) {
-          rating = el.rating;
-        };
-      });
-    }
-    return rating;
-  };
-
-  // eslint-disable-next-line react/no-unused-class-component-methods
-  RRR = (id) => {
-    let rating;
-    const {getRatedMovies} = this.props;
-    if (getRatedMovies().findIndex((el) => el.id === id) !== -1) {
-      rating = getRatedMovies().find((el) => el.id === id).rating;
-    } else {
-      rating = 0;
-    }
-    return rating;  
-  }
-
 
   render() {
-    // eslint-disable-next-line no-unused-vars
-    const { shortText, item, ratedList, getRatedMovies } = this.props;
-    // eslint-disable-next-line no-unused-vars
-    const { id, title, release_date: releaseDate, poster_path: posterPath, overview, genre_ids: genreIds, vote_average: voteAverage, rating } = item;
+    const { shortText, item, getRatedMovies } = this.props;
+    const { id, title, release_date: releaseDate, poster_path: posterPath, overview, genre_ids: genreIds, vote_average: voteAverage} = item;
 
     const poster = this.showPoster(posterPath);
     const name = shortText(title, 35);
@@ -124,7 +91,6 @@ export default class Item extends Component {
 
     const text = shortText(overview, 170);
 
-    // const onRating = this.checkMovieInRated(id, getRatedMovies(), rating);
     const onRating = (getRatedMovies().findIndex((el) => el.id === id) !== -1) ? (getRatedMovies().find((el) => el.id === id).rating) : 0;
 
     const colorFilm = this.ratingColor(voteAverage);

@@ -36,14 +36,46 @@ export default class App extends Component {
     if (!JSON.parse(localStorage.getItem('guestToken'))) {
       this.createGuestSession();
     } else {
-      this.changeRatedMovies();
-      // const {ratedList} =this.state;
-      // localStorage.setItem('arrRatedMovies', JSON.stringify(ratedList)); 
+      this.changeRatedMovies(); 
     };
   };
 
+  // Обновление
+  componentDidUpdate(prevProps, prevState) {
+    const { searchQuery, pageNumber } = this.state;
+
+    if (searchQuery !== prevState.searchQuery || pageNumber !== prevState.pageNumber) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        loading: true,
+        error: false,
+        notFound: false,
+      });
+      this.debounceSearchMovies(searchQuery, pageNumber);
+    };
+  };
+
+  // Гостевая сессия
+  createGuestSession = () => {
+    const apiService = new ApiService();
+    apiService
+      .createGuestSession()
+      .then((res) => {
+        localStorage.setItem('guestToken', JSON.stringify(res));
+      })
+      .catch(this.onError);
+  };
+
+  // Изменение строки ввода
+  onInputChange = (evt) => {
+    this.setState({
+      searchQuery: evt.target.value,
+      loading: true,
+      pageNumber: 1,
+    });
+  };
+
   // Получить список фильмов с API
-  // eslint-disable-next-line react/sort-comp
   searchMovies = () => {
     const { searchQuery, pageNumber } = this.state;
     const apiService = new ApiService();
@@ -77,41 +109,9 @@ export default class App extends Component {
     });
   };
 
-  shortText = (text, length) => {
-    if (text.length > length) {
-      const lastIndex = text.slice(0, length).lastIndexOf(' ');
-      const newText = `${text.slice(0, lastIndex)}...`;
-      return newText;
-    }
-    return text;
-  };
-
   // Задержка получения списка фильмов
   // eslint-disable-next-line react/sort-comp
   debounceSearchMovies = debounce(this.searchMovies, 300);
-
-  onInputChange = (evt) => {
-    this.setState({
-      searchQuery: evt.target.value,
-      loading: true,
-      pageNumber: 1,
-    });
-  };
-
-  // Обновление
-  componentDidUpdate(prevProps, prevState) {
-    const { searchQuery, pageNumber } = this.state;
-
-    if (searchQuery !== prevState.searchQuery || pageNumber !== prevState.pageNumber) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        loading: true,
-        error: false,
-        notFound: false,
-      });
-      this.debounceSearchMovies(searchQuery, pageNumber);
-    }
-  }
 
   // Пагинация
   onPageChange = (page) => {
@@ -120,14 +120,13 @@ export default class App extends Component {
     });
   };
 
-  createGuestSession = () => {
-    const apiService = new ApiService();
-    apiService
-      .createGuestSession()
-      .then((res) => {
-        localStorage.setItem('guestToken', JSON.stringify(res));
-      })
-      .catch(this.onError);
+  shortText = (text, length) => {
+    if (text.length > length) {
+      const lastIndex = text.slice(0, length).lastIndexOf(' ');
+      const newText = `${text.slice(0, lastIndex)}...`;
+      return newText;
+    }
+    return text;
   };
 
   getGenresList = () => {
@@ -142,23 +141,6 @@ export default class App extends Component {
       .catch(this.onError);
   };
 
-  // changeRatedMovies = () => {
-  //   const apiService = new ApiService();
-  //   apiService
-  //     .getRatedMovies()
-  //     .then((body) => {
-  //       this.setState({
-  //         ratedList: [...body.results]
-  //       });
-  //     });
-  // };
-
-  changeRatedMovies = () => {
-    const arrRated = this.getRatedMovies();
-    this.setState({
-      ratedList: [...arrRated]
-    })
-  }
 
   // Добавить оценку в localStorage
   setRating = (id, rating) => {
@@ -181,7 +163,7 @@ export default class App extends Component {
     });
     
     localStorage.setItem('arrRatedMovies', JSON.stringify(newArr));
-  }
+  };
 
   // Удалить оценку из localStorage
   deleteRating = (id) => {
@@ -194,14 +176,20 @@ export default class App extends Component {
     });
 
     localStorage.setItem('arrRatedMovies', JSON.stringify(newArr));     
-  }
+  };
 
   // Получить список оцененных филмов из localStorage
   getRatedMovies = () => {
     const arrRatedMovies = JSON.parse(localStorage.getItem('arrRatedMovies'));
     return arrRatedMovies;
-  }
+  };
 
+  changeRatedMovies = () => {
+    const arrRated = this.getRatedMovies();
+    this.setState({
+      ratedList: [...arrRated]
+    })
+  };
 
   render() {
     const { moviesList, searchQuery, pageNumber, totalPages, error, loading, notFound, ratedList, genresList } = this.state;
@@ -219,7 +207,6 @@ export default class App extends Component {
     const cardList = !loading && !error ? <CardList
                                             moviesList={moviesList}
                                             shortText={this.shortText}
-                                            ratedList={ratedList}
                                             genresList={genresList}
                                             changeRatedMovies={this.changeRatedMovies}
                                             setRating={this.setRating}

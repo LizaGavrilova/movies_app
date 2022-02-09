@@ -12,7 +12,6 @@ export default class CardList extends Component {
   static defaultProps = {
     moviesList: [],
     shortText: () => {},
-    ratedList: [],
     genresList: [],
     changeRatedMovies: () => {},
     setRating: () => {},
@@ -23,7 +22,6 @@ export default class CardList extends Component {
   static propTypes = {
     moviesList: PropTypes.instanceOf(Array),
     shortText: PropTypes.func,
-    ratedList: PropTypes.instanceOf(Array),
     genresList: PropTypes.instanceOf(Array),
     changeRatedMovies: PropTypes.func,
     setRating: PropTypes.func,
@@ -32,12 +30,11 @@ export default class CardList extends Component {
   };
 
   render() {
-    const { moviesList, shortText, ratedList, genresList, changeRatedMovies, setRating, deleteRating, getRatedMovies } = this.props;
+    const { moviesList, shortText, genresList, changeRatedMovies, setRating, deleteRating, getRatedMovies } = this.props;
     const elements = moviesList.map((item) =>
       <Item key={item.id}
             item={item}
             shortText={shortText}
-            ratedList={ratedList}
             genresList={genresList}
             changeRatedMovies={changeRatedMovies}
             setRating={setRating}
