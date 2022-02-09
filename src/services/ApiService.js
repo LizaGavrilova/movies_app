@@ -33,34 +33,34 @@ export default class ApiService {
     return res.genres;
   }
 
-  // Добавить оценку
-  async setRating(id, rating) {
-    const url = `${this.apiBase}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${this.token}`;
-    const body = {
-      value: rating,
-    };
+  // // Добавить оценку
+  // async setRating(id, rating) {
+  //   const url = `${this.apiBase}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${this.token}`;
+  //   const body = {
+  //     value: rating,
+  //   };
 
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json;charset=utf-8' },
-      body: JSON.stringify(body),
-    }).catch();
-  }
+  //   await fetch(url, {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  //     body: JSON.stringify(body),
+  //   }).catch();
+  // }
 
-  // Удалить оценку
-  async deleteRating(id) {
-    const url = `${this.apiBase}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${this.token}`;
+  // // Удалить оценку
+  // async deleteRating(id) {
+  //   const url = `${this.apiBase}movie/${id}/rating?api_key=${this.apiKey}&guest_session_id=${this.token}`;
 
-    await fetch(url, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json;charset=utf-8' },
-    });
-  }
+  //   await fetch(url, {
+  //     method: 'DELETE',
+  //     headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  //   });
+  // }
 
-  // Получить список оцененных фильмов
-  async getRatedMovies() {
-    const url = `guest_session/${this.token}/rated/movies?api_key=${this.apiKey}`;
-    const body = await this.getResource(url);
-    return body;
-  }
+  // // Получить список оцененных фильмов
+  // async getRatedMovies() {
+  //   const url = `guest_session/${this.token}/rated/movies?api_key=${this.apiKey}`;
+  //   const body = await this.getResource(url);
+  //   return body;
+  // }
 }

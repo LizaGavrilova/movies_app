@@ -37,6 +37,8 @@ export default class App extends Component {
       this.createGuestSession();
     } else {
       this.changeRatedMovies();
+      // const {ratedList} =this.state;
+      // localStorage.setItem('arrRatedMovies', JSON.stringify(ratedList)); 
     };
   };
 
@@ -140,16 +142,65 @@ export default class App extends Component {
       .catch(this.onError);
   };
 
+  // changeRatedMovies = () => {
+  //   const apiService = new ApiService();
+  //   apiService
+  //     .getRatedMovies()
+  //     .then((body) => {
+  //       this.setState({
+  //         ratedList: [...body.results]
+  //       });
+  //     });
+  // };
+
   changeRatedMovies = () => {
-    const apiService = new ApiService();
-    apiService
-      .getRatedMovies()
-      .then((body) => {
-        this.setState({
-          ratedList: [...body.results]
-        });
-      });
-  };
+    const arrRated = this.getRatedMovies();
+    this.setState({
+      ratedList: [...arrRated]
+    })
+  }
+
+  // Добавить оценку в localStorage
+  setRating = (id, rating) => {
+    const {ratedList, moviesList} =this.state;
+    let newArr= [];
+    
+    const film = moviesList.find((el) => el.id === id);
+    film.rating = rating;
+
+    const idx = ratedList.findIndex((el) => el.id === id);
+
+    if(idx !== -1) {
+      newArr = [...ratedList.slice(0, idx), film, ...ratedList.slice(idx + 1)];
+    } else {
+      newArr = [...ratedList, film];
+    }
+
+    this.setState({
+      ratedList: newArr
+    });
+    
+    localStorage.setItem('arrRatedMovies', JSON.stringify(newArr));
+  }
+
+  // Удалить оценку из localStorage
+  deleteRating = (id) => {
+    const {ratedList} =this.state;
+    const idx = ratedList.findIndex((el) => el.id === id);
+    const newArr = [...ratedList.slice(0, idx), ...ratedList.slice(idx + 1)];
+
+    this.setState({
+      ratedList: newArr
+    });
+
+    localStorage.setItem('arrRatedMovies', JSON.stringify(newArr));     
+  }
+
+  // Получить список оцененных филмов из localStorage
+  getRatedMovies = () => {
+    const arrRatedMovies = JSON.parse(localStorage.getItem('arrRatedMovies'));
+    return arrRatedMovies;
+  }
 
 
   render() {
@@ -171,6 +222,9 @@ export default class App extends Component {
                                             ratedList={ratedList}
                                             genresList={genresList}
                                             changeRatedMovies={this.changeRatedMovies}
+                                            setRating={this.setRating}
+                                            deleteRating={this.deleteRating}
+                                            getRatedMovies={this.getRatedMovies}
                                           /> : null;
 
     const onPagination =
@@ -195,7 +249,14 @@ export default class App extends Component {
                   </>
                 </TabPane>
                 <TabPane tab="Rated" key="2">
-                  <RatedList ratedList={ratedList} changeRatedMovies={this.changeRatedMovies} />
+                  <RatedList ratedList={ratedList}
+                            genresList={genresList}
+                            shortText={this.shortText}
+                            setRating={this.setRating}
+                            deleteRating={this.deleteRating}
+                            changeRatedMovies={this.changeRatedMovies}
+                            getRatedMovies={this.getRatedMovies}
+                  />
                 </TabPane>
               </Tabs>
             </Layout> 

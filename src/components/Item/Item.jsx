@@ -6,7 +6,6 @@ import 'antd/dist/antd.min.css';
 
 import { Card , Rate } from 'antd';
 import { format } from 'date-fns';
-import ApiService from '../../services/ApiService';
 import noPoster from '../../img/no_poster.png';
 
 export default class Item extends Component {
@@ -16,7 +15,10 @@ export default class Item extends Component {
     item: {},
     ratedList: [],
     genresList: [],
-    changeRatedMovies: () => {}
+    changeRatedMovies: () => {},
+    setRating: () => {},
+    deleteRating: () => {},
+    getRatedMovies: () => {}
   };
 
   static propTypes = {
@@ -25,7 +27,10 @@ export default class Item extends Component {
     item: PropTypes.instanceOf(Object),
     ratedList: PropTypes.instanceOf(Array),
     genresList: PropTypes.instanceOf(Array),
-    changeRatedMovies: PropTypes.func
+    changeRatedMovies: PropTypes.func,
+    setRating: PropTypes.func,
+    deleteRating: PropTypes.func,
+    getRatedMovies: PropTypes.func
   };
 
   showPoster = (path) => {
@@ -45,13 +50,13 @@ export default class Item extends Component {
   };
 
   ratingСhanges = (grade) => {
-    const {id, changeRatedMovies} = this.props;
-    const apiService = new ApiService();
+    const {item, setRating, deleteRating, changeRatedMovies} = this.props;
+    const {id} = item;
 
     if (grade === 0) {
-      apiService.deleteRating(id);
+      deleteRating(id);
     } else {
-      apiService.setRating(id, grade);
+      setRating(id, grade);
     }
     changeRatedMovies();
   };
@@ -73,25 +78,40 @@ export default class Item extends Component {
       borderColor: color
     }
   };
-
-  checkMovieInRated = (id, arr, isRating) => {
+  
+  // eslint-disable-next-line react/no-unused-class-component-methods
+  checkMovieInRated = (id, arr, isRating) => {   
     let rating = 0;
+
     if (isRating) {
-      rating = isRating;
+      rating = isRating; 
     } else {
       arr.forEach((el) => {
         if (el.id === id) {
           rating = el.rating;
-        }
-        return rating;
+        };
       });
     }
     return rating;
   };
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
+  RRR = (id) => {
+    let rating;
+    const {getRatedMovies} = this.props;
+    if (getRatedMovies().findIndex((el) => el.id === id) !== -1) {
+      rating = getRatedMovies().find((el) => el.id === id).rating;
+    } else {
+      rating = 0;
+    }
+    return rating;  
+  }
+
 
   render() {
-    const { shortText, item, ratedList } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const { shortText, item, ratedList, getRatedMovies } = this.props;
+    // eslint-disable-next-line no-unused-vars
     const { id, title, release_date: releaseDate, poster_path: posterPath, overview, genre_ids: genreIds, vote_average: voteAverage, rating } = item;
 
     const poster = this.showPoster(posterPath);
@@ -104,7 +124,8 @@ export default class Item extends Component {
 
     const text = shortText(overview, 170);
 
-    const onRating = this.checkMovieInRated(id, ratedList, rating);
+    // const onRating = this.checkMovieInRated(id, getRatedMovies(), rating);
+    const onRating = (getRatedMovies().findIndex((el) => el.id === id) !== -1) ? (getRatedMovies().find((el) => el.id === id).rating) : 0;
 
     const colorFilm = this.ratingColor(voteAverage);
 
@@ -129,7 +150,7 @@ export default class Item extends Component {
         <div className="ant-card-body_text">{text}</div>
 
         <div className="ant-card-body_stars">
-          <Rate count={10} defaultValue={onRating} onChange={this.ratingСhanges} />
+          <Rate count={10} value={onRating} onChange={this.ratingСhanges} />
         </div>
       </Card>
     );
