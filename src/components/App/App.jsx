@@ -150,7 +150,10 @@ export default class App extends Component {
     const film = moviesList.find((el) => el.id === id);
     film.rating = rating;
 
-    const idx = ratedList.findIndex((el) => el.id === id);
+    let idx;
+    if (ratedList) {
+      idx = ratedList.findIndex((el) => el.id === id);
+    }
 
     if(idx !== -1) {
       newArr = [...ratedList.slice(0, idx), film, ...ratedList.slice(idx + 1)];
@@ -168,8 +171,14 @@ export default class App extends Component {
   // Удалить оценку из localStorage
   deleteRating = (id) => {
     const {ratedList} =this.state;
-    const idx = ratedList.findIndex((el) => el.id === id);
-    const newArr = [...ratedList.slice(0, idx), ...ratedList.slice(idx + 1)];
+    let idx;
+    if (ratedList) {
+      idx = ratedList.findIndex((el) => el.id === id);
+    }
+    let newArr;
+    if (idx !== -1) {
+      newArr = [...ratedList.slice(0, idx), ...ratedList.slice(idx + 1)];
+    }    
 
     this.setState({
       ratedList: newArr
@@ -187,7 +196,7 @@ export default class App extends Component {
   changeRatedMovies = () => {
     const arrRated = this.getRatedMovies();
     this.setState({
-      ratedList: [...arrRated]
+      ratedList: (arrRated !== null) ? [...arrRated] : []
     })
   };
 

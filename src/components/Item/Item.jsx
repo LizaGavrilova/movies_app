@@ -89,9 +89,12 @@ export default class Item extends Component {
       date = format(new Date(releaseDate), "MMM d',' yyyy");
     };
 
-    const text = shortText(overview, 170);
+    const text = shortText(overview, 135);
 
-    const onRating = (getRatedMovies().findIndex((el) => el.id === id) !== -1) ? (getRatedMovies().find((el) => el.id === id).rating) : 0;
+    let onRating;
+    if (getRatedMovies() !== null) {
+      onRating = (getRatedMovies().findIndex((el) => el.id === id) !== -1) ? (getRatedMovies().find((el) => el.id === id).rating) : 0;
+    } else onRating = 0;
 
     const colorFilm = this.ratingColor(voteAverage);
 
