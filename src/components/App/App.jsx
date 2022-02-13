@@ -67,9 +67,9 @@ export default class App extends Component {
   };
 
   // Изменение строки ввода
-  onInputChange = (evt) => {
+  onInputChange = (event) => {
     this.setState({
-      searchQuery: evt.target.value,
+      searchQuery: event.target.value,
       loading: true,
       pageNumber: 1,
     });
