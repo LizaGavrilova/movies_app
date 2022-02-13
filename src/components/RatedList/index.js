@@ -1,1 +1,1 @@
-export {default as RatedList} from './RatedList.jsx';
+export { default as RatedList } from './RatedList.jsx';

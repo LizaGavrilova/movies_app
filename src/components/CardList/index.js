@@ -1,1 +1,1 @@
-export {default as CardList} from './CardList.jsx'
+export { default as CardList } from './CardList.jsx';
