@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import './App.scss';
 import 'antd/dist/antd.min.css';
 
 import { Alert, Spin, Layout, Tabs, Pagination } from 'antd';
@@ -9,11 +8,13 @@ import { Offline, Online } from "react-detect-offline";
 
 import noConnection from '../../img/no_connection.png';
 
-import { GenresProvider } from '../GenresContext.js/GenresContext'; 
-import Search from '../Search';
-import CardList from '../CardList';
-import RatedList from '../RatedList';
+import { GenresProvider } from '../Context/Context'
+import {Search} from '../Search';
+import {CardList} from '../CardList';
+import {RatedList} from '../RatedList';
 import ApiService from '../../services/ApiService';
+
+import './App.scss';
 
 const { TabPane } = Tabs;
 
@@ -45,7 +46,6 @@ export default class App extends Component {
     const { searchQuery, pageNumber } = this.state;
 
     if (searchQuery !== prevState.searchQuery || pageNumber !== prevState.pageNumber) {
-      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         loading: true,
         error: false,
@@ -110,7 +110,6 @@ export default class App extends Component {
   };
 
   // Задержка получения списка фильмов
-  // eslint-disable-next-line react/sort-comp
   debounceSearchMovies = debounce(this.searchMovies, 300);
 
   // Пагинация

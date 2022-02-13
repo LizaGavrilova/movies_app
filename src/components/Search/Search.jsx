@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import './Search.scss';
-import 'antd/dist/antd.min.css';
-
 import { Layout, Input } from 'antd';
+
+import './Search.scss';
 
 const { Header } = Layout;
 
-// eslint-disable-next-line react/prefer-stateless-function
 export default class Search extends Component {
   static defaultProps = {
     onInputChange: () => {}

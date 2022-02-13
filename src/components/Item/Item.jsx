@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import './Item.scss';
-import 'antd/dist/antd.min.css';
-
 import { Card , Rate } from 'antd';
 import { format } from 'date-fns';
 import noPoster from '../../img/no_poster.png';
+
+import './Item.scss';
 
 export default class Item extends Component {
   static defaultProps = {
@@ -40,10 +39,7 @@ export default class Item extends Component {
 
   genresMovie = (genresNumbers) => {
     const {genresList} = this.props;
-    const genres = genresNumbers.map((el) => {
-      const genre = genresList.find((item) => item.id === el);
-      return genre.name;
-    })
+    const genres = genresNumbers.map((el) => genresList.find((item) => item.id === el).name)
     return genres;
   };
 

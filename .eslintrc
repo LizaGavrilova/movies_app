@@ -23,6 +23,9 @@
         "jest": true
     },
     "rules": {
+        "react/prefer-stateless-function": 0,
+        "react/no-did-update-set-state" : 0,
+        "react/sort-comp" : 0,
         "jsx-a11y/no-autofocus": 0,
         "import/extensions": [
             "error",

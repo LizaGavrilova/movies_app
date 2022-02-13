@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import './CardList.scss';
-
 import { Content } from 'antd/lib/layout/layout';
 
-import Item from '../Item';
+import {Item} from '../Item';
 
-// eslint-disable-next-line react/prefer-stateless-function
+import './CardList.scss';
+
 export default class CardList extends Component {
   static defaultProps = {
     moviesList: [],

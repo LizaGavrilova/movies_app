@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import './RatedList.scss';
-
 import { Content } from 'antd/lib/layout/layout';
 
-import Item from '../Item';
+import {Item} from '../Item';
 
-// eslint-disable-next-line react/prefer-stateless-function
+import './RatedList.scss';
+
 export default class RatedList extends Component {
   static defaultProps = {
     ratedList: [],

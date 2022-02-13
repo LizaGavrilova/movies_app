@@ -1,3 +1,1 @@
-import CardList from './CardList.jsx';
-
-export default CardList;
+export {default as CardList} from './CardList.jsx'
