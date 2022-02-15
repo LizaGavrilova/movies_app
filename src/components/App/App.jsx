@@ -8,7 +8,7 @@ import { Offline, Online } from "react-detect-offline";
 
 import noConnection from '../../img/no_connection.png';
 
-import { GenresProvider } from '../Context/Context'
+import { GenresProvider } from '../../Context/Context';
 import {Search} from '../Search';
 import {CardList} from '../CardList';
 import {RatedList} from '../RatedList';
