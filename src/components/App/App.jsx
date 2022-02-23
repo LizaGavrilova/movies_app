@@ -4,14 +4,14 @@ import 'antd/dist/antd.min.css';
 
 import { Alert, Spin, Layout, Tabs, Pagination } from 'antd';
 import { debounce } from 'lodash';
-import { Offline, Online } from "react-detect-offline";
+import { Offline, Online } from 'react-detect-offline';
 
 import noConnection from '../../img/no_connection.png';
 
 import { GenresProvider } from '../../Context/Context';
-import {Search} from '../Search';
-import {CardList} from '../CardList';
-import {RatedList} from '../RatedList';
+import { Search } from '../Search';
+import { ItemList } from '../ItemList';
+import { RatedList } from '../RatedList';
 import ApiService from '../../services/ApiService';
 
 import './App.scss';
@@ -28,7 +28,7 @@ export default class App extends Component {
     error: false,
     notFound: false,
     ratedList: [],
-    genresList: []
+    genresList: [],
   };
 
   componentDidMount() {
@@ -37,9 +37,9 @@ export default class App extends Component {
     if (!JSON.parse(localStorage.getItem('guestToken'))) {
       this.createGuestSession();
     } else {
-      this.changeRatedMovies(); 
-    };
-  };
+      this.changeRatedMovies();
+    }
+  }
 
   // Обновление
   componentDidUpdate(prevProps, prevState) {
@@ -52,8 +52,8 @@ export default class App extends Component {
         notFound: false,
       });
       this.debounceSearchMovies(searchQuery, pageNumber);
-    };
-  };
+    }
+  }
 
   // Гостевая сессия
   createGuestSession = () => {
@@ -134,18 +134,17 @@ export default class App extends Component {
       .getGenres()
       .then((res) => {
         this.setState({
-          genresList: [...res]          
-        })
+          genresList: [...res],
+        });
       })
       .catch(this.onError);
   };
 
-
   // Добавить оценку в localStorage
   setRating = (id, rating) => {
-    const {ratedList, moviesList} =this.state;
-    let newArr= [];
-    
+    const { ratedList, moviesList } = this.state;
+    let newArr = [];
+
     const film = moviesList.find((el) => el.id === id);
     film.rating = rating;
 
@@ -154,22 +153,22 @@ export default class App extends Component {
       idx = ratedList.findIndex((el) => el.id === id);
     }
 
-    if(idx !== -1) {
+    if (idx !== -1) {
       newArr = [...ratedList.slice(0, idx), film, ...ratedList.slice(idx + 1)];
     } else {
       newArr = [...ratedList, film];
     }
 
     this.setState({
-      ratedList: newArr
+      ratedList: newArr,
     });
-    
+
     localStorage.setItem('arrRatedMovies', JSON.stringify(newArr));
   };
 
   // Удалить оценку из localStorage
   deleteRating = (id) => {
-    const {ratedList} =this.state;
+    const { ratedList } = this.state;
     let idx;
     if (ratedList) {
       idx = ratedList.findIndex((el) => el.id === id);
@@ -177,13 +176,13 @@ export default class App extends Component {
     let newArr;
     if (idx !== -1) {
       newArr = [...ratedList.slice(0, idx), ...ratedList.slice(idx + 1)];
-    }    
+    }
 
     this.setState({
-      ratedList: newArr
+      ratedList: newArr,
     });
 
-    localStorage.setItem('arrRatedMovies', JSON.stringify(newArr));     
+    localStorage.setItem('arrRatedMovies', JSON.stringify(newArr));
   };
 
   // Получить список оцененных филмов из localStorage
@@ -195,12 +194,13 @@ export default class App extends Component {
   changeRatedMovies = () => {
     const arrRated = this.getRatedMovies();
     this.setState({
-      ratedList: (arrRated !== null) ? [...arrRated] : []
-    })
+      ratedList: arrRated !== null ? [...arrRated] : [],
+    });
   };
 
   render() {
-    const { moviesList, searchQuery, pageNumber, totalPages, error, loading, notFound, ratedList, genresList } = this.state;
+    const { moviesList, searchQuery, pageNumber, totalPages, error, loading, notFound, ratedList, genresList } =
+      this.state;
 
     const errorMessage =
       error && searchQuery !== '' ? (
@@ -212,15 +212,18 @@ export default class App extends Component {
 
     const spin = loading && !error ? <Spin size="large" /> : null;
 
-    const cardList = !loading && !error ? <CardList
-                                            moviesList={moviesList}
-                                            shortText={this.shortText}
-                                            genresList={genresList}
-                                            changeRatedMovies={this.changeRatedMovies}
-                                            setRating={this.setRating}
-                                            deleteRating={this.deleteRating}
-                                            getRatedMovies={this.getRatedMovies}
-                                          /> : null;
+    const cardList =
+      !loading && !error ? (
+        <ItemList
+          moviesList={moviesList}
+          shortText={this.shortText}
+          genresList={genresList}
+          changeRatedMovies={this.changeRatedMovies}
+          setRating={this.setRating}
+          deleteRating={this.deleteRating}
+          getRatedMovies={this.getRatedMovies}
+        />
+      ) : null;
 
     const onPagination =
       moviesList.length !== 0 && searchQuery !== '' && !loading && !error ? (
@@ -244,25 +247,27 @@ export default class App extends Component {
                   </>
                 </TabPane>
                 <TabPane tab="Rated" key="2">
-                  <RatedList ratedList={ratedList}
-                            genresList={genresList}
-                            shortText={this.shortText}
-                            setRating={this.setRating}
-                            deleteRating={this.deleteRating}
-                            changeRatedMovies={this.changeRatedMovies}
-                            getRatedMovies={this.getRatedMovies}
+                  <RatedList
+                    ratedList={ratedList}
+                    genresList={genresList}
+                    shortText={this.shortText}
+                    setRating={this.setRating}
+                    deleteRating={this.deleteRating}
+                    changeRatedMovies={this.changeRatedMovies}
+                    getRatedMovies={this.getRatedMovies}
                   />
                 </TabPane>
               </Tabs>
-            </Layout> 
-            <img className='hidden connection_img' src={noConnection} alt='No connection' />         
-          </Online>        
+            </Layout>
+            <img className="hidden connection_img" src={noConnection} alt="No connection" />
+          </Online>
 
           <Offline>
-            <img className='connection_img' src={noConnection} alt='No connection' style={{margin: '50px'}} />
-            <h1 className='connection_text' style={{textAlign: 'center'}}>No internet connection</h1>
+            <img className="connection_img" src={noConnection} alt="No connection" style={{ margin: '50px' }} />
+            <h1 className="connection_text" style={{ textAlign: 'center' }}>
+              No internet connection
+            </h1>
           </Offline>
-          
         </div>
       </GenresProvider>
     );

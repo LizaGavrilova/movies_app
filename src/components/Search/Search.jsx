@@ -9,11 +9,11 @@ const { Header } = Layout;
 
 export default class Search extends Component {
   static defaultProps = {
-    onInputChange: () => {}
+    onInputChange: () => {},
   };
 
   static propTypes = {
-    onInputChange: PropTypes.func
+    onInputChange: PropTypes.func,
   };
 
   render() {

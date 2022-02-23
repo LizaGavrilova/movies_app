@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 import { Content } from 'antd/lib/layout/layout';
 
-import {Item} from '../Item';
+import { Item } from '../Item';
 
-import './CardList.scss';
+import './ItemList.scss';
 
-export default class CardList extends Component {
+export default class ItemList extends Component {
   static defaultProps = {
     moviesList: [],
     shortText: () => {},
@@ -15,7 +15,7 @@ export default class CardList extends Component {
     changeRatedMovies: () => {},
     setRating: () => {},
     deleteRating: () => {},
-    getRatedMovies: () => {}
+    getRatedMovies: () => {},
   };
 
   static propTypes = {
@@ -25,21 +25,27 @@ export default class CardList extends Component {
     changeRatedMovies: PropTypes.func,
     setRating: PropTypes.func,
     deleteRating: PropTypes.func,
-    getRatedMovies: PropTypes.func
+    getRatedMovies: PropTypes.func,
   };
 
   render() {
-    const { moviesList, shortText, genresList, changeRatedMovies, setRating, deleteRating, getRatedMovies } = this.props;
-    const elements = moviesList.map((item) =>
-      <Item key={item.id}
+    const { moviesList, shortText, genresList, changeRatedMovies, setRating, deleteRating, getRatedMovies } =
+      this.props;
+    return (
+      <Content>
+        {moviesList.map((item) => (
+          <Item
+            key={item.id}
             item={item}
             shortText={shortText}
             genresList={genresList}
             changeRatedMovies={changeRatedMovies}
             setRating={setRating}
             deleteRating={deleteRating}
-            getRatedMovies={getRatedMovies} />);
-
-    return <Content>{elements}</Content>;
+            getRatedMovies={getRatedMovies}
+          />
+        ))}
+      </Content>
+    );
   }
 }

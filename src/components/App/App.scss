@@ -1,40 +1,40 @@
-body{
-  background-color: #E5E5E5 !important;
+body {
+  background-color: #e5e5e5 !important;
 }
 
 .hidden {
   display: none;
 }
 
-.container{
+.container {
   max-width: 1010px;
   min-width: 460px;
   margin: 0 auto;
 }
 
-.ant-tabs{
-	min-height: 100vh;
-	background: #FFFFFF;
+.ant-tabs {
+  min-height: 100vh;
+  background: #ffffff;
 }
 
-.ant-tabs-nav-wrap{
+.ant-tabs-nav-wrap {
   justify-content: center;
 }
 
-.ant-tabs-tab{
+.ant-tabs-tab {
   padding-top: 19px;
   padding-bottom: 10px;
 }
 
-.ant-tabs-nav{
+.ant-tabs-nav {
   margin-bottom: 0 !important;
 
-  &::before{
+  &::before {
     display: none;
   }
 }
 
-.ant-layout{
+.ant-layout {
   position: relative;
 }
 

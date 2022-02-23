@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Card , Rate } from 'antd';
+import { Card, Rate } from 'antd';
 import { format } from 'date-fns';
 import noPoster from '../../img/no_poster.png';
 
@@ -12,11 +12,11 @@ export default class Item extends Component {
     id: 0,
     item: {},
     genresList: [],
-    shortText: () => {}, 
+    shortText: () => {},
     changeRatedMovies: () => {},
     setRating: () => {},
     deleteRating: () => {},
-    getRatedMovies: () => {}
+    getRatedMovies: () => {},
   };
 
   static propTypes = {
@@ -27,25 +27,25 @@ export default class Item extends Component {
     changeRatedMovies: PropTypes.func,
     setRating: PropTypes.func,
     deleteRating: PropTypes.func,
-    getRatedMovies: PropTypes.func
+    getRatedMovies: PropTypes.func,
   };
 
   showPoster = (path) => {
     if (path) {
       return `https://image.tmdb.org/t/p/w500/${path}`;
-    } 
-    return noPoster;    
+    }
+    return noPoster;
   };
 
   genresMovie = (genresNumbers) => {
-    const {genresList} = this.props;
-    const genres = genresNumbers.map((el) => genresList.find((item) => item.id === el).name)
+    const { genresList } = this.props;
+    const genres = genresNumbers.map((el) => genresList.find((item) => item.id === el).name);
     return genres;
   };
 
   ratingСhanges = (grade) => {
-    const {item, setRating, deleteRating, changeRatedMovies} = this.props;
-    const {id} = item;
+    const { item, setRating, deleteRating, changeRatedMovies } = this.props;
+    const { id } = item;
 
     if (grade === 0) {
       deleteRating(id);
@@ -69,13 +69,21 @@ export default class Item extends Component {
     }
 
     return {
-      borderColor: color
-    }
+      borderColor: color,
+    };
   };
 
   render() {
     const { shortText, item, getRatedMovies } = this.props;
-    const { id, title, release_date: releaseDate, poster_path: posterPath, overview, genre_ids: genreIds, vote_average: voteAverage} = item;
+    const {
+      id,
+      title,
+      release_date: releaseDate,
+      poster_path: posterPath,
+      overview,
+      genre_ids: genreIds,
+      vote_average: voteAverage,
+    } = item;
 
     const poster = this.showPoster(posterPath);
     const name = shortText(title, 35);
@@ -83,13 +91,16 @@ export default class Item extends Component {
     let date;
     if (releaseDate) {
       date = format(new Date(releaseDate), "MMM d',' yyyy");
-    };
+    }
 
     const text = shortText(overview, 135);
 
     let onRating;
     if (getRatedMovies() !== null) {
-      onRating = (getRatedMovies().findIndex((el) => el.id === id) !== -1) ? (getRatedMovies().find((el) => el.id === id).rating) : 0;
+      onRating =
+        getRatedMovies().findIndex((el) => el.id === id) !== -1
+          ? getRatedMovies().find((el) => el.id === id).rating
+          : 0;
     } else onRating = 0;
 
     const colorFilm = this.ratingColor(voteAverage);
@@ -99,16 +110,18 @@ export default class Item extends Component {
     const genresCards = (
       <>
         {genresFilm.map((genre) => (
-            <span className='ant-card-body_genre-item' key={genre}>
-              {genre}
-            </span>
-          ))}
+          <span className="ant-card-body_genre-item" key={genre}>
+            {genre}
+          </span>
+        ))}
       </>
-    )
+    );
 
     return (
       <Card className="ant-card" cover={<img alt="poster" src={poster} />}>
-        <div className="ant-card-body_rating" style={colorFilm}>{voteAverage}</div>
+        <div className="ant-card-body_rating" style={colorFilm}>
+          {voteAverage}
+        </div>
         <div className="ant-card-body_title">{name}</div>
         <div className="ant-card-body_date">{date}</div>
         <div className="ant-card-body_genres">{genresCards}</div>
